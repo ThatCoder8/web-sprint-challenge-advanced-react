@@ -94,11 +94,13 @@ export default class AppClass extends React.Component {
     // Use a POST request to send a payload to the server.
     evt.preventDefault();
     const {index, steps, email } = this.state;
-    const { x, y } = this.getXY();
+    const { x, y } = this.getXY(index);
+    console.log(x,y)
     const payload = { x, y, steps, email};
 
+
     try {
-      const response = await fetch(`http:localhost:9000/api/result`, {
+      const response = await fetch(`http://localhost:9000/api/result`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -106,9 +108,9 @@ export default class AppClass extends React.Component {
         body: JSON.stringify(payload),
       });
       const data = await response.json();
-      this.setState({ message: data.message })
-    } catch(error) {
-      this.setState({ message: 'Error submitting the form'})
+      this.setState({ message: data.message, email: initialEmail, })
+    } catch(error) { 
+      this.setState({ message: 'Error submitting the form', email: initialEmail,})
     }
   }
 
@@ -119,8 +121,8 @@ export default class AppClass extends React.Component {
       <div id="wrapper" className={className}>
         <p>(This component is not required to pass the sprint)</p>
         <div className="info">
-          <h3 id="coordinates">C{this.getXYMessage()}</h3>
-          <h3 id="steps">You moved {steps} times</h3>
+          <h3 id="coordinates">{this.getXYMessage()}</h3>
+          <h3 id="steps">{`You moved ${steps} time${steps == 1 ? '' : 's'}`}</h3>
         </div>
         <div id="grid">
           {
